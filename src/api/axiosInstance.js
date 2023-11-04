@@ -1,4 +1,4 @@
-const url = 'http://localhost:8080/api'
+const url = 'https://clipboard-app-backend-16c2583d149e.herokuapp.com/api'
 import axios from 'axios'
 
 const getAxiosInstance = () => {
