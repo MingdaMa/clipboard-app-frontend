@@ -5,7 +5,7 @@ const getAxiosInstance = () => {
     const defaultOptions = {
         baseURL: url,
         method: 'get',
-        withCredentials: true,
+        withCredentials: false,
         headers: {
           'Content-Type': 'application/json',
         },
