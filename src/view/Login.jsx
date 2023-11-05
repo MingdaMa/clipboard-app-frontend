@@ -13,7 +13,7 @@ const Login = () => {
         },
         }}
     >
-        <Button href="https://clipboard-app-backend-16c2583d149e.herokuapp.com///oauth2/authorization/google">Login with Google</Button>
+        <Button href="https://clipboard-app-backend-16c2583d149e.herokuapp.com/oauth2/authorization/google">Login with Google</Button>
     </Box>
 }
 
