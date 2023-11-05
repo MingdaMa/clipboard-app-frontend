@@ -1,1 +1,1 @@
-web: npm run preview
+web: bin/start-nginx-solo
