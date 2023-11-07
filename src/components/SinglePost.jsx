@@ -10,13 +10,13 @@ import AddTagToPostModal from './AddTagToPostModal'
 const Post = ({ tags, post, deletePost}) => {
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [tagsForPost, setTagsForPost] = useState([])
+    const [isTagSaved, setIsTagSaved] = useState(false)
 
     const handleClose = () => setIsModalOpen(false)
 
     const getTagForPost = async () => {
         try {
             const res = await tagService.getTagsByPostId(post.id)
-            console.log(res.data)
             setTagsForPost(res.data)
         } catch (e) {
             console.log(e)
@@ -25,18 +25,12 @@ const Post = ({ tags, post, deletePost}) => {
 
     useEffect(() => {
         getTagForPost()
-    }, [])
+    }, [isTagSaved])
 
     return (
         <>
             <Card sx={{ maxWidth: 230, maxHeight: 200 }}>
                 <CardActionArea>
-                {/* <CardMedia
-                    component="img"
-                    height="140"
-                    image="/static/images/cards/contemplative-reptile.jpg"
-                    alt="green iguana"
-                /> */}
                 <CardContent>
                     <Typography gutterBottom variant="body1" component="div">
                         {post.title}
@@ -61,7 +55,7 @@ const Post = ({ tags, post, deletePost}) => {
                     </IconButton>
                 </CardActions>
             </Card>
-            <AddTagToPostModal tags={tags} tagsForPost={tagsForPost} open={isModalOpen} handleClose={handleClose} postId={post.id}/>
+            <AddTagToPostModal tags={tags} setIsTagSaved={setIsTagSaved} tagsForPost={tagsForPost} open={isModalOpen} handleClose={handleClose} postId={post.id}/>
         </>
     )
 }

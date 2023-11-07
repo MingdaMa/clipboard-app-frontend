@@ -1,24 +1,34 @@
-import getAxiosInstance from './axiosInstance'
+import { ACCESS_TOKEN, API_BASE_URL } from '../constants'
+import axios from 'axios'
 
-const axiosInstance = getAxiosInstance()
+const axiosInstance = axios.create({
+    baseURL: `${API_BASE_URL}/api/tags`,
+    withCredentials: true,
+    headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`
+    }
+})
+
+const userId = localStorage.getItem('userId')
 
 const addNewTag = async (newTag) => {
-    const res = await axiosInstance.post('/tags', { name: newTag })
+    const res = await axiosInstance.post(`/${userId}`, { name: newTag })
     return res
 }
 
 const getAllTags = async () => {
-    const res = await axiosInstance.get('/tags')
+    const res = await axiosInstance.get(`${userId}`)
     return res.data
 }
 
 const deleteTagById = async (tagId) => {
-    const res = await axiosInstance.delete(`/tags/${tagId}`)
+    const res = await axiosInstance.delete(`/${tagId}`)
     return res
 }
 
 const getTagsByPostId = async (postId) => {
-    const res = await axiosInstance.get(`/tags/posts/${postId}`)
+    const res = await axiosInstance.get(`/posts/${postId}/${userId}`)
     return res
 }
 

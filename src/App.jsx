@@ -1,68 +1,40 @@
 import { useState, useEffect } from 'react'
-import './App.css'
-import { tagService, postService } from './api/index'
-import Tags from './components/Tags'
-import Posts from './components/Posts'
-import AddPostModal from './components/AddPostModal'
-import { IconButton, Tooltip, Fab, Button } from '@mui/material'
-import AddIcon from '@mui/icons-material/Add';
+import { Routes, Route } from 'react-router-dom';
+import { loginService } from './api/index'
+import Home from './view/Home'
+import Login from './view/Login'
+import OAuth2RedirectHandler from './components/OAuth2RedirectHandler';
 
 
 const App = () => {
-  const [tags, setTags] = useState([])
-  const [posts, setPosts] = useState([])
-  const [isDeleteTag, setIsDeleteTag] = useState(false)
-  const [isTagAdded, setIsTagAdded] = useState(false)
-  const [isAddPostModalOpen, setIsAddPostModalOpen] = useState(false)
-  const [isPostAdded, setIsPostAdded] = useState(false)
-  const [isPostDeleted, setIsPostDeleted] = useState(false)
+  const [authenticated, setAuthenticated] = useState(false)
+  const [currentUser, setCurrentUser] = useState(null)
+  const [loading, setLoading] = useState(true)
 
-  const getAllTags = async () => {
-    const tagList = await tagService.getAllTags()
-    setTags(tagList)
-  }
-
-  const getAllPosts = async () => {
-    const postList = await postService.getAllPosts()
-    setPosts(postList)
-  }
-
-  const deletePost = async (postId) => {
+  const getCurrentUser = async () => {
     try {
-        const res = await postService.deletePostById(postId)
-        if (res.status >= 200) {
-            setIsPostDeleted(true)
-        }
-    } catch(e) {
-        console.log(e)
+      const res = await loginService.getCurrentUser()
+      if (res !== 'No access token set.') {
+        setCurrentUser(res)
+        setAuthenticated(true)
+        setLoading(false)
+        localStorage.setItem('userId', res.id)
+      }
+    } catch (e) {
+      console.log(e)
     }
-}
-
-  const handleClosePostModal = () => setIsAddPostModalOpen(false)
-
-  const handleOpenPostModal = () => setIsAddPostModalOpen(true)
-
-  const handleLogout = () => {
-    console.log('log out')
   }
 
   useEffect(() => {
-    getAllTags()
-    getAllPosts()
-  }, [isDeleteTag, isTagAdded, isPostAdded, isPostDeleted])
+    getCurrentUser()
+  }, [])
 
   return (
-    <>
-      {/* <Button onClick={handleLogout}>Logout</Button> */}
-      <Tags tags={tags} setIsDeleteTag={setIsDeleteTag} setIsTagAdded={setIsTagAdded} setPosts={setPosts}/>
-      <Tooltip title='Add a new post'>
-        <Fab aria-label="delete" color="secondary" onClick={handleOpenPostModal}>
-          <AddIcon />
-        </Fab>
-      </Tooltip>
-      <Posts posts={posts} tags={tags} deletePost={deletePost}/>
-      <AddPostModal isAddPostModalOpen={isAddPostModalOpen} handleClosePostModal={handleClosePostModal} setIsPostAdded={setIsPostAdded}/>
-    </>
+    <Routes>
+      <Route path="/" element={<Home authenticated={authenticated} currentUser={currentUser}/>} />
+      <Route path="/login" element={<Login authenticated={authenticated}/>} />
+      <Route path='/oauth2/redirect' element={<OAuth2RedirectHandler/>}/>
+    </Routes>
   )
 }
 

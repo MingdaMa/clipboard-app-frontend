@@ -35,7 +35,7 @@ function getStyles(name, tagLabel, theme) {
     };
   }
 
-const AddTagToPostModal = ({ open, tags, tagsForPost, postId, handleClose}) => {
+const AddTagToPostModal = ({ open, tags, tagsForPost, postId, handleClose, setIsTagSaved}) => {
     const theme = useTheme()
     const [tagsArr, setTagsArr] = useState([])
     const [newTags, setNewTags] = useState([])
@@ -52,6 +52,7 @@ const AddTagToPostModal = ({ open, tags, tagsForPost, postId, handleClose}) => {
             const tagsId = newTags.reduce((tagArr, curr) => [...tagArr, curr.id], [])
             const res = await postService.addTagsToPost(postId, tagsId)
             if (res.status >= 200) {
+                setIsTagSaved(true)
                 handleClose()
             }
         } catch(e) {
